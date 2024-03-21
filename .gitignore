@@ -1,2 +1,5 @@
 # Virtual environments
 venv/
+
+# Tests cache
+tests/__pycache__
