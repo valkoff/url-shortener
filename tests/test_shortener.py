@@ -1,4 +1,7 @@
 
+from src.shortener import Shortener
+
+
 class TestShortener:
 
     long_url = "https://www.example.com/path?q=search"
