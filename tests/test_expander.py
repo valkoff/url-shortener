@@ -1,7 +1,6 @@
 import unittest
 from unittest.mock import MagicMock
 from src.expander import Expander, InvalidURLException, URLNotFoundException
-from src.shortener import Shortener
 
 class TestExpander(unittest.TestCase):
 
@@ -11,7 +10,6 @@ class TestExpander(unittest.TestCase):
     def setUp(self):
         self.urls_collection_mock = MagicMock()
         self.expander = Expander(self.short_base_url, self.urls_collection_mock)
-        self.shortener = Shortener(self.short_base_url, self.urls_collection_mock)
 
     def test_can_initialize_expander(self):
         self.assertIsNotNone(self.expander)
