@@ -1,12 +1,22 @@
+"""
+Description: CLI tool for URL shortening and expanding using a MongoDB database.
+
+Returns:
+    None
+"""
+
 import argparse
 import os
+from pymongo import MongoClient, collection
 from src.shortener import Shortener
 from src.expander import Expander
 from src.hash_generator import HashGenerator
-from pymongo import MongoClient, collection
 
 
 def main():
+    """
+    Parses command line arguments and executes URL shortening or expanding operations.
+    """
     parser = argparse.ArgumentParser(description="CLI URL Shortener Tool")
     args = _get_args(parser)
     urls = _init_db()
@@ -43,7 +53,7 @@ def _init_db() -> collection.Collection:
     mongo_port = os.getenv("MONGO_PORT", "27017")
     mongo_dbname = os.getenv("MONGO_DBNAME", "url_shortener")
 
-    url_time_to_live = os.getenv("URL_TIME_TO_LIVE", 60)
+    url_time_to_live = int(os.getenv("URL_TIME_TO_LIVE", "60"))
 
     mongo_uri = (
         f"mongodb://{mongo_username}:{mongo_password}@{mongo_hostname}:{mongo_port}/"
