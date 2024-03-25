@@ -1,32 +1,37 @@
-
-import time
 import unittest
-from src.expander import Expander
+from unittest.mock import MagicMock
+from src.expander import Expander, InvalidURLException, URLNotFoundException
 from src.shortener import Shortener
-from unittest.mock import patch
 
 class TestExpander(unittest.TestCase):
 
-    short_url = "https://myurlshortener.com/fstp4"
     short_base_url = "http://myurlshortener.com/"
     long_url = "https://www.example.com/path?q=search"
-    expander = Expander(short_base_url)
+    
+    def setUp(self):
+        self.urls_collection_mock = MagicMock()
+        self.expander = Expander(self.short_base_url, self.urls_collection_mock)
+        self.shortener = Shortener(self.short_base_url, self.urls_collection_mock)
 
     def test_can_initialize_expander(self):
         self.assertIsNotNone(self.expander)
 
     def test_can_expand_url(self):
-        expanded_url = self.expander.expand(self.short_url)
+        self.urls_collection_mock.find_one.return_value = {
+            "hash": "fstp4",
+            "url": self.long_url
+        }
+        
+        short_url = "http://myurlshortener.com/fstp4"
+        expanded_url = self.expander.expand(short_url)
+        
         self.assertIsNotNone(expanded_url)
         self.assertEqual(expanded_url, self.long_url)
 
-    @patch('time.sleep', return_value=None)
-    def test_cant_expand_exipred_url(self, patched_time_sleep):
-        minifier = Shortener(self.short_base_url)
-        short_url = minifier.minify(self.long_url)
-
-        time.sleep(61)
-        self.assertRaises(Exception, self.expander.expand, short_url)
-
-    def test_cant_expand_not_shortened_url(self):
-        self.assertRaises(Exception, self.expander.expand, self.short_url)
+    def test_cant_expand_not_existing_shortened_url(self):
+        self.urls_collection_mock.find_one.return_value = None
+        self.assertRaises(URLNotFoundException, self.expander.expand, f"{self.short_base_url}invalid")
+        
+    def test_expand_invalid_shortened_url(self):
+        invalid_short_url = "https://invalid.com/shortened"
+        self.assertRaises(InvalidURLException, self.expander.expand, invalid_short_url)

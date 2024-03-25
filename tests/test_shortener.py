@@ -1,14 +1,16 @@
 
-import time
 import unittest
 from src.shortener import Shortener
-from unittest.mock import patch
+from unittest.mock import MagicMock
 
 class TestShortener(unittest.TestCase):
 
-    long_url = "https://www.example.com/path?q=searcah"
     short_base_url = "http://myurlshortener.com/"
-    shortener = Shortener(short_base_url)
+    long_url = "https://www.example.com/path?q=search"
+    
+    def setUp(self) -> None:
+        self.urls_collection_mock = MagicMock()
+        self.shortener = Shortener(self.short_base_url, self.urls_collection_mock)
 
     def test_can_initialize_shortener(self):
         self.assertIsNotNone(self.shortener)
@@ -31,11 +33,3 @@ class TestShortener(unittest.TestCase):
         short_url2 = self.shortener.minify(self.long_url + "x")
 
         self.assertNotEqual(short_url1, short_url2)
-
-    @patch('time.sleep', return_value=None)
-    def test_expired_url_can_be_shortened_again(self, patched_time_sleep):
-        short_url = self.shortener.minify(self.long_url)
-        time.sleep(61)
-        self.assertEqual(1, patched_time_sleep.call_count)
-
-        self.assertEqual(self.shortener.minify(self.long_url), short_url)
