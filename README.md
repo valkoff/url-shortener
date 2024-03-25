@@ -1,5 +1,21 @@
 # URL Shortener
 
+## Usage
+
+##### Minify URL
+
+```bash
+docker-compose run --rm app -m "http://example.com"
+```
+
+##### Expand URL
+
+```bash
+docker-compose run --rm app -e "http://myurlshortener.com/65695"
+```
+
+## Requirements
+
 Implement a Python command line tool that performs URL shortening and expansion.
 
 The tool has two primary functions:

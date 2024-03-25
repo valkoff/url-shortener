@@ -1,6 +1,6 @@
 from pymongo import collection
 from datetime import datetime, timezone
-from .hash_generator import HashGenerator
+from src.hash_generator import HashGenerator
 
 
 class CannotGenerateUniqueHashException(Exception):
